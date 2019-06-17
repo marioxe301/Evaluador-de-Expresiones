@@ -4,6 +4,8 @@
 #include <vector>
 #include <string>
 #include <iostream>
+#include <regex>
+#include <algorithm>
 
 class eval
 {
@@ -16,6 +18,7 @@ public:
     bool isNumber(char token);
     bool isToken(char token);
     bool isOperator(char token);
+    bool isOther(char token);
     bool evaluarExpresion(std::string expresion);
     bool verificarParen(std::string expresion);
     bool verificarCorch(std::string expresion);

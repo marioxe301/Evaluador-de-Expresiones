@@ -1,5 +1,4 @@
 #include "evaluador.h"
-#include <regex>
 
 //funcion separa por tokens la expresion matematica
 std::vector<std::string>  eval::Tokenizar(std::string expres){
@@ -65,6 +64,17 @@ bool eval::isOperator(char token){
     return esOperacion;
 }
 
+bool eval::isOther(char token){
+    std::string opInvalidos = " !#$=?¡'¿qwertyuiop´¨~asdfghjklñ{}`<>zxcvbnm;,:-QWERTYUIOPASDFGHJKLÑZXCVBNM";
+    bool esOtro= false;
+    for(int i = 0; i < opInvalidos.length();i++){
+        if(token==opInvalidos[i]){
+            esOtro= true;
+        }
+    }
+    return esOtro;
+}
+
 bool eval::evaluarExpresion(std::string expresion){
     
 }
@@ -111,8 +121,40 @@ bool eval::verificarCorch(std::string expresion){
 
 bool eval::verificarOperaciones(std::string expresion){
     //si verifica que ya no es un numero debe ir seguido de una operacion junto con otro numero
-    for(int i=0; i< expresion.length();i++){
+    //si encuentra un operador primero entonces la expresion esta mal
+    //si encuentra un numero debe segirle un operador
+    //ejemplo = ((23+4))*4 = para esta funcion = 23+4*4-1
+    //bool verificacion = true;
+    int contadornumeros= 0;
+    int contadorsignos=0;
+    //eliminar corchetes y parentesis para que solo quede la expresion
+    std::string operacion = expresion;
+
+    operacion.erase(std::remove(operacion.begin(),operacion.end(),'('),operacion.end());
+    operacion.erase(std::remove(operacion.begin(),operacion.end(),')'),operacion.end());
+    operacion.erase(std::remove(operacion.begin(),operacion.end(),'['),operacion.end());
+    operacion.erase(std::remove(operacion.begin(),operacion.end(),']'),operacion.end());
+
+    //verifica si hay algun operador al inicio o al final
+    if(isOperator(operacion[0]) || isOperator(operacion[operacion.length()-1])){
+        return false;
+    }else{
         
+        for(int i=0; i< operacion.length();i++){
+            bool check = isNumber(operacion[i]);
+            if(!check){
+                contadornumeros++;
+                if(isOperator(operacion[i])){
+                    contadorsignos++;
+                }
+            }
+        }
+    }
+
+    if(contadorsignos == (contadornumeros-1)){
+        return true;
+    }else{
+        return false;
     }
 }
 
@@ -139,6 +181,23 @@ bool eval::verificarPoCExtra(std::string expresion){
         if(expresion[i] == '[' && expresion[i+1] == ']' ){
             verificacion = false;
         }
+
+        if(expresion[i]== '(' && isOperator(expresion[i+1])){
+            verificacion = false;
+        }
+
+        if(expresion[i]== '[' && isOperator(expresion[i+1])){
+            verificacion = false;
+        }
+
+        if(expresion[i]== '(' && isOther(expresion[i+1])){
+            verificacion = false;
+        }
+
+        if(expresion[i]== '[' && isOther(expresion[i+1])){
+            verificacion = false;
+        }
+
     }
     return verificacion;
 }
