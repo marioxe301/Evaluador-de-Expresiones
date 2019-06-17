@@ -17,7 +17,7 @@ std::vector<std::string>  eval::Tokenizar(std::string expres){
     auto final = std::sregex_iterator();
 
     for (std::sregex_iterator i = inicio; i != final; ++i) {
-        std::cout << (*i).str() << std::endl;
+        //std::cout << (*i).str() << std::endl;
         tokens.push_back((*i).str());
     }
 
@@ -25,12 +25,12 @@ std::vector<std::string>  eval::Tokenizar(std::string expres){
 }
 
 //si es numero
-bool eval::isNumber(char token){
-    std::string tokens = "0123456789.";
-    bool esNumero = false;
+bool eval::isNumber(std::string token){
+    std::string tokens = "[]()+-/%*^";
+    bool esNumero = true;
     for(int i=0; i< tokens.length();i++){
-        if(token == tokens[i]){
-            esNumero = true;
+        if(token == std::string(1,tokens[i])){
+            esNumero = false;
         }
     }
     
@@ -41,10 +41,10 @@ bool eval::isNumber(char token){
 //si es un token
 bool eval::isToken(char token){
     std::string tokens = "[]()";
-    bool esToken = true;
+    bool esToken = false;
     for(int i=0; i< tokens.length();i++){
-        if(token !=tokens[i]){
-            esToken = false;
+        if(token ==tokens[i]){
+            esToken = true;
         }
     }
 
@@ -54,10 +54,10 @@ bool eval::isToken(char token){
 //si es un operador
 bool eval::isOperator(char token){
     std::string tokens = "+-*/%^";
-    bool esOperacion = true;
+    bool esOperacion = false;
     for(int i=0; i< tokens.length();i++){
-        if(token != tokens[i]){
-            esOperacion = false;
+        if(token == tokens[i]){
+            esOperacion = true;
         }
     }
 
@@ -76,7 +76,37 @@ bool eval::isOther(char token){
 }
 
 bool eval::evaluarExpresion(std::string expresion){
-    
+    bool ev = true;
+    bool evaluacion[]={
+        verificarParen(expresion),
+        verificarCorch(expresion),
+        verificarOperaciones(expresion),
+        verificarExtra(expresion),
+        verificarPoCExtra(expresion)
+    };
+
+    if(!evaluacion[0]){
+        std::cout<<"Verifique algun parentesis"<< std::endl;
+        ev = false;
+    } 
+    if(!evaluacion[1]){
+        std::cout<<"Verifique algun corchete"<< std::endl;
+         ev = false;
+    } 
+    if(!evaluacion[2]){
+        std::cout<<"Verifique alguna operacion"<< std::endl;
+         ev = false;
+    } 
+    if(!evaluacion[3]){
+        std::cout<<"Verifique si no hay un simbolo invalido"<< std::endl;
+         ev = false;
+    }
+    if(!evaluacion[4]){
+        std::cout<<"Verifique algun caso invalido"<< std::endl;
+         ev = false;
+    }
+
+    return ev;
 }
 
 bool eval::verificarParen(std::string expresion){
@@ -135,19 +165,21 @@ bool eval::verificarOperaciones(std::string expresion){
     operacion.erase(std::remove(operacion.begin(),operacion.end(),'['),operacion.end());
     operacion.erase(std::remove(operacion.begin(),operacion.end(),']'),operacion.end());
 
+    std::vector<std::string> exp = Tokenizar(operacion);
     //verifica si hay algun operador al inicio o al final
     if(isOperator(operacion[0]) || isOperator(operacion[operacion.length()-1])){
         return false;
     }else{
         
-        for(int i=0; i< operacion.length();i++){
-            bool check = isNumber(operacion[i]);
-            if(!check){
+        for(int i=0; i< exp.size();i++){
+            if(isNumber(exp[i])){
                 contadornumeros++;
-                if(isOperator(operacion[i])){
-                    contadorsignos++;
-                }
             }
+
+            if(isOperator(exp[i][0])){
+                contadorsignos++;
+            }
+
         }
     }
 
@@ -159,7 +191,7 @@ bool eval::verificarOperaciones(std::string expresion){
 }
 
 bool eval::verificarExtra(std::string expresion){
-    std::string opInvalidos = " !#$=?¡'¿qwertyuiop´¨~asdfghjklñ{}`<>zxcvbnm;,:-QWERTYUIOPASDFGHJKLÑZXCVBNM";
+    std::string opInvalidos = " !#$=?¡'¿qwertyuiop´¨~asdfghjklñ{}`<>zxcvbnm;,:QWERTYUIOPASDFGHJKLÑZXCVBNM";
     bool verificacion= true;
     for(int i=0;i<expresion.length();i++){
         for(int j=0; j< opInvalidos.length();j++){

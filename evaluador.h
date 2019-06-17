@@ -15,7 +15,7 @@ public:
     
     
     std::vector<std::string> Tokenizar(std::string operacion);
-    bool isNumber(char token);
+    bool isNumber(std::string token);
     bool isToken(char token);
     bool isOperator(char token);
     bool isOther(char token);
