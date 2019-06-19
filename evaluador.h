@@ -6,6 +6,7 @@
 #include <iostream>
 #include <regex>
 #include <algorithm>
+#include <math.h>
 
 struct operador{
     int peso;
@@ -34,8 +35,10 @@ public:
     bool verificarPesoMayor(std::string,std::stack<std::string>);
     bool verificarPesoMenor(std::string,std::stack<std::string>);
 
+
     std::vector<operador> PesosOP();
     std::vector<std::string>passPosfix(std::vector<std::string>);
+    double evaluarExpresion(std::vector<std::string>);
     //^ % mismo peso 
     //* / mismo peso
     // + - msimo peso

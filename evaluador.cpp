@@ -311,7 +311,7 @@ std::vector<std::string> eval::passPosfix(std::vector<std::string> expresion){
             }
 
             std::reverse(posfijo.begin(),posfijo.end());
-            
+
             while(!signos.empty()){
                 posfijo.push_back(signos.top());
                 signos.pop();
@@ -410,4 +410,42 @@ bool eval::verificarPesoMayor(std::string token,std::stack<std::string> pila){
             return true;
         }
                  
+}
+
+double eval::evaluarExpresion(std::vector<std::string> expresion){
+    std::stack<std::string>resultado;
+
+    for(int i=0;i<expresion.size();i++){
+        if(isNumber(expresion[i])){
+            resultado.push(expresion[i]);
+        }else{
+            double num1;
+            double num2;
+            num1 = std::stof(resultado.top());
+            resultado.pop();
+            num2 = std::stof(resultado.top());
+            resultado.pop();
+            if(expresion[i]=="+"){
+                double res = num1 + num2;
+                resultado.push(std::to_string(res));
+            }else if(expresion[i]=="-"){
+                double res = num1 - num2;
+                resultado.push(std::to_string(res));
+            }else if(expresion[i]=="*"){
+                double res = num1 * num2;
+                resultado.push(std::to_string(res));
+            }else if(expresion[i]=="/"){
+                double res = num1 / num2;
+                resultado.push(std::to_string(res));
+            }else if(expresion[i]=="^"){
+                double res = std::pow(num1,num2);
+                resultado.push(std::to_string(res));
+            }else if(expresion[i]=="%"){
+                double res = std::remainder(num1,num2);
+                resultado.push(std::to_string(res));
+            }
+        }
+    }
+
+    return std::stof(resultado.top());
 }
