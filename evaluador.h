@@ -7,6 +7,11 @@
 #include <regex>
 #include <algorithm>
 
+struct operador{
+    int peso;
+    char op;
+};
+
 class eval
 {
 public:
@@ -25,6 +30,15 @@ public:
     bool verificarOperaciones(std::string expresion);
     bool verificarExtra(std::string expresion);
     bool verificarPoCExtra(std::string expresion);
+    bool verificarIgualPeso(std::string,std::stack<std::string>);
+    bool verificarPesoMayor(std::string,std::stack<std::string>);
+    bool verificarPesoMenor(std::string,std::stack<std::string>);
+
+    std::vector<operador> PesosOP();
+    std::vector<std::string>passPosfix(std::vector<std::string>);
+    //^ % mismo peso 
+    //* / mismo peso
+    // + - msimo peso
 
 };
 
