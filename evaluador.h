@@ -7,10 +7,17 @@
 #include <regex>
 #include <algorithm>
 #include <math.h>
+#include <tuple>
 
 struct operador{
     int peso;
     char op;
+};
+
+struct constantes{
+    //variables booleanas en constantes binarias c++14
+    inline static const bool r1 = 0b1;
+    inline static const bool r2 = 0b0;
 };
 
 class eval
@@ -21,10 +28,12 @@ public:
     
     
     std::vector<std::string> Tokenizar(std::string operacion);
-    bool isNumber(std::string token);
-    bool isToken(char token);
-    bool isOperator(char token);
-    bool isOther(char token);
+    //feature c++14 auto en funciones
+    auto isNumber(std::string token)-> bool;
+    auto isToken(char token)-> bool;
+    auto isOperator(char token)-> bool;
+    auto isOther(char token) -> bool;
+
     bool evaluarExpresion(std::string expresion);
     bool verificarParen(std::string expresion);
     bool verificarCorch(std::string expresion);
@@ -38,7 +47,7 @@ public:
 
     std::vector<operador> PesosOP();
     std::vector<std::string>passPosfix(std::vector<std::string>);
-    double evaluarExpresion(std::vector<std::string>);
+    float evaluarExpresion(std::vector<std::string>);
     //^ % mismo peso 
     //* / mismo peso
     // + - msimo peso

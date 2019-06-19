@@ -1,4 +1,25 @@
 #include "evaluador.h"
+//c++11 = 1,1,1,1
+/* 
+1. El uso de regex
+2. El uso para declarar una funcion por default
+3. El uso de el identificador auto
+4. El uso de tuples
+*/
+//c++14 = 1,1,1
+/*
+1. Declarar funciones con identificador auto
+2. 
+3. Flags para marcar algo como deprecated
+4. Variables binarias
+*/
+//c++17 = 1,1,1,1
+/*
+1. Flags para evitar el warning de elementos que no se usan
+2. Actualizaciones en libreria algorithm y el uso de remove
+3. Iinicializacion de los estados if
+4. Uso de Inline para definir una variable static const
+*/
 
 //funcion separa por tokens la expresion matematica
 std::vector<std::string>  eval::Tokenizar(std::string expres){
@@ -25,11 +46,12 @@ std::vector<std::string>  eval::Tokenizar(std::string expres){
 }
 
 //si es numero
-bool eval::isNumber(std::string token){
+auto eval::isNumber(std::string token)->bool{
     std::string tokens = "[]()+-/%*^";
     bool esNumero = true;
     for(int i=0; i< tokens.length();i++){
-        if(token == std::string(1,tokens[i])){
+        //init if statements c++17
+        if(auto val = token; val== std::string(1,tokens[i])){
             esNumero = false;
         }
     }
@@ -39,7 +61,7 @@ bool eval::isNumber(std::string token){
 }
 
 //si es un token
-bool eval::isToken(char token){
+auto eval::isToken(char token)->bool{
     std::string tokens = "[]()";
     bool esToken = false;
     for(int i=0; i< tokens.length();i++){
@@ -52,7 +74,7 @@ bool eval::isToken(char token){
 }
 
 //si es un operador
-bool eval::isOperator(char token){
+auto eval::isOperator(char token) ->bool{
     std::string tokens = "+-*/%^";
     bool esOperacion = false;
     for(int i=0; i< tokens.length();i++){
@@ -64,7 +86,8 @@ bool eval::isOperator(char token){
     return esOperacion;
 }
 
-bool eval::isOther(char token){
+//funcion con auto c++14
+auto eval::isOther(char token)->bool{
     std::string opInvalidos = " !#$=?¡'¿qwertyuiop´¨~asdfghjklñ{}`<>zxcvbnm;,:_QWERTYUIOPASDFGHJKLÑZXCVBNM";
     bool esOtro= false;
     for(int i = 0; i < opInvalidos.length();i++){
@@ -77,31 +100,34 @@ bool eval::isOther(char token){
 
 bool eval::evaluarExpresion(std::string expresion){
     bool ev = true;
-    bool evaluacion[]={
+    /*bool evaluacion[]={
         verificarParen(expresion),
         verificarCorch(expresion),
         verificarOperaciones(expresion),
         verificarExtra(expresion),
         verificarPoCExtra(expresion)
-    };
+    };*/
 
-    if(!evaluacion[0]){
+    //feature c++11
+    std::tuple<bool,bool,bool,bool,bool> evalu(verificarParen(expresion),verificarCorch(expresion),verificarOperaciones(expresion),verificarExtra(expresion),verificarPoCExtra(expresion));
+
+    if(!std::get<0>(evalu)){
         std::cout<<"Verifique algun parentesis"<< std::endl;
         ev = false;
     } 
-    if(!evaluacion[1]){
+    if(!std::get<1>(evalu)){
         std::cout<<"Verifique algun corchete"<< std::endl;
          ev = false;
     } 
-    if(!evaluacion[2]){
+    if(!std::get<2>(evalu)){
         std::cout<<"Verifique alguna operacion"<< std::endl;
          ev = false;
     } 
-    if(!evaluacion[3]){
+    if(!std::get<3>(evalu)){
         std::cout<<"Verifique si no hay un simbolo invalido"<< std::endl;
          ev = false;
     }
-    if(!evaluacion[4]){
+    if(!std::get<4>(evalu)){
         std::cout<<"Verifique algun caso invalido"<< std::endl;
          ev = false;
     }
@@ -240,7 +266,8 @@ bool eval::verificarPoCExtra(std::string expresion){
     }
     return verificacion;
 }
-
+//feature c++14
+[[deprecated("La funcion al final no se utiliza para evaluar los pesos")]]
 std::vector<operador> eval::PesosOP(){
     std::vector <operador> lista = {
         operador({1,'+'}),
@@ -260,7 +287,7 @@ std::vector<std::string> eval::passPosfix(std::vector<std::string> expresion){
 
     std::string a;
     int cont=0;
-    std::vector<operador> pesos = PesosOP();
+    //std::vector<operador> pesos = PesosOP();
     // + - -> 1 * / -> 2 y ^ % -> 3
     for(int i=0;i< expresion.size(); i++){
         if(isToken(expresion[i][0])){
@@ -384,35 +411,40 @@ bool eval::verificarPesoMenor(std::string token,std::stack<std::string> pila){
 
 
 bool eval::verificarPesoMayor(std::string token,std::stack<std::string> pila){
+        
+        constantes con;
+
+        bool r1= con.r1;
+        bool r2 = con.r2;
         if(token[0]=='+'){
             if(pila.top()== "*"||pila.top()== "/"||pila.top()== "%"||pila.top()== "^"){
                 return false;
             }
         }else if (token[0]=='-'){
             if(pila.top()== "*"||pila.top()== "/"||pila.top()== "%"||pila.top()== "^"){
-                return false;
+                return r2;
             }
         }else if (token[0]=='*'){
             if(pila.top()== "%"||pila.top()== "^"){
-                return false;
+                return r2;
             }else{
-                return true;
+                return r1;
             }
         }else if (token[0]=='/'){
             if(pila.top()== "%"||pila.top()== "^"){
-                return false;
+                return r2;
             }else{
-                return true;
+                return r1;
             }
         }else if (token[0]=='^'){
-            return true;
+            return r1;
         }else if(token[0]=='%'){
-            return true;
+            return r1;
         }
                  
 }
 
-double eval::evaluarExpresion(std::vector<std::string> expresion){
+float eval::evaluarExpresion(std::vector<std::string> expresion){
     std::stack<std::string>resultado;
 
     for(int i=0;i<expresion.size();i++){
