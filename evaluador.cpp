@@ -266,6 +266,7 @@ bool eval::verificarPoCExtra(std::string expresion){
     }
     return verificacion;
 }
+
 //feature c++14
 [[deprecated("La funcion al final no se utiliza para evaluar los pesos")]]
 std::vector<operador> eval::PesosOP(){
@@ -287,18 +288,21 @@ std::vector<std::string> eval::passPosfix(std::vector<std::string> expresion){
 
     std::string a;
     int cont=0;
+    bool entroPar=false;
     //std::vector<operador> pesos = PesosOP();
     // + - -> 1 * / -> 2 y ^ % -> 3
     for(int i=0;i< expresion.size(); i++){
         if(isToken(expresion[i][0])){
             if(expresion[i]=="(" || expresion[i]=="["){
                     signos.push(expresion[i]);
+                    entroPar=true;
             }else{
                 for(int a = 0; a < cont;a++){
                     numeros.push(signos.top());
                     signos.pop();                   
                 }
                 signos.pop();
+                entroPar= false;
                 cont=0;
             }
         }else if(isNumber(expresion[i])){
@@ -307,19 +311,21 @@ std::vector<std::string> eval::passPosfix(std::vector<std::string> expresion){
             if(signos.empty()){
                 signos.push(expresion[i]);
             }else{
-                    if(verificarIgualPeso(expresion[i],signos)){
-                            numeros.push(signos.top());
-                            signos.pop();
-                            signos.push(expresion[i]);
-                    }else if(verificarPesoMayor(expresion[i],signos)){
-                            signos.push(expresion[i]);
-                    }else if(verificarPesoMenor(expresion[i],signos)){
-                            numeros.push(signos.top());
-                            signos.pop();
-                            signos.push(expresion[i]);
+                    if(entroPar == false){
+                        if(verificarIgualPeso(expresion[i],signos)){
+                                numeros.push(signos.top());
+                                signos.pop();
+                                signos.push(expresion[i]);
+                        }else if(verificarPesoMayor(expresion[i],signos)){
+                                signos.push(expresion[i]);
+                        }else if(verificarPesoMenor(expresion[i],signos)){
+                                numeros.push(signos.top());
+                                signos.pop();
+                                signos.push(expresion[i]);
+                        }
                     }else{
-                            signos.push(expresion[i]);
-                            cont++;
+                        signos.push(expresion[i]);
+                        cont++;
                     }
                 }
             }
@@ -416,6 +422,7 @@ bool eval::verificarPesoMayor(std::string token,std::stack<std::string> pila){
 
         bool r1= con.r1;
         bool r2 = con.r2;
+        
         if(token[0]=='+'){
             if(pila.top()== "*"||pila.top()== "/"||pila.top()== "%"||pila.top()== "^"){
                 return false;
@@ -427,19 +434,23 @@ bool eval::verificarPesoMayor(std::string token,std::stack<std::string> pila){
         }else if (token[0]=='*'){
             if(pila.top()== "%"||pila.top()== "^"){
                 return r2;
+            }else if(pila.top()=="(" || pila.top()=="["){
+                return r2;
             }else{
                 return r1;
             }
         }else if (token[0]=='/'){
             if(pila.top()== "%"||pila.top()== "^"){
                 return r2;
+            }else if(pila.top()=="(" || pila.top()=="["){
+                return r2;
             }else{
                 return r1;
             }
         }else if (token[0]=='^'){
-            return r1;
+            return r2;
         }else if(token[0]=='%'){
-            return r1;
+            return r2;
         }
                  
 }
