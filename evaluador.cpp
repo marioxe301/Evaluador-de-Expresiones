@@ -30,7 +30,7 @@ std::vector<std::string>  eval::Tokenizar(std::string expres){
     std::string expresion(expres);
 
     //regular expresion, permite generar expresiones regulares y tokenizarlas c++11
-    std::regex expre("[0-9]?([0-9]*[.])?[0-9]+|[\\-\\+\\\\\(\\)\\/\\*\\%\\^\\[\\]]");
+    std::regex expre("[0-9]?([0-9]*[.])?[0-9]+|[\\-\\+\\\\\\(\\)\\/\\*\\%\\^\\[\\]]");
 
     //tipo de dato que reconoce que tipo es "auto" c++11
     auto inicio = std::sregex_iterator(expresion.begin(), expresion.end(), expre);
@@ -472,19 +472,19 @@ float eval::evaluarExpresion(std::vector<std::string> expresion){
                 double res = num1 + num2;
                 resultado.push(std::to_string(res));
             }else if(expresion[i]=="-"){
-                double res = num1 - num2;
+                double res = num2 - num1;
                 resultado.push(std::to_string(res));
             }else if(expresion[i]=="*"){
                 double res = num1 * num2;
                 resultado.push(std::to_string(res));
             }else if(expresion[i]=="/"){
-                double res = num1 / num2;
+                double res = num2 / num1;
                 resultado.push(std::to_string(res));
             }else if(expresion[i]=="^"){
-                double res = std::pow(num1,num2);
+                double res = std::pow(num2,num1);
                 resultado.push(std::to_string(res));
             }else if(expresion[i]=="%"){
-                double res = std::remainder(num1,num2);
+                double res = std::remainder(num2,num1);
                 resultado.push(std::to_string(res));
             }
         }
