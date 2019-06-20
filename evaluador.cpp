@@ -1,4 +1,5 @@
 #include "evaluador.h"
+
 //c++11 = 1,1,1,1
 /* 
 1. El uso de regex
@@ -402,7 +403,7 @@ bool eval::verificarPesoMenor(std::string token,std::stack<std::string> pila){
                 return false;
             }
         }else if (token[0]=='/'){
-            if(pila.top()== "%"||pila.top()== "^"){
+            if(pila.top()== "%"|| pila.top()== "^"){
                 return true;
             }else{
                 return false;
@@ -448,9 +449,17 @@ bool eval::verificarPesoMayor(std::string token,std::stack<std::string> pila){
                 return r1;
             }
         }else if (token[0]=='^'){
-            return r2;
+            if(pila.top()== "+"||pila.top()== "-"||pila.top()== "*"||pila.top()== "/"){
+            return r1;
+            }else{
+                return r2;
+            }
         }else if(token[0]=='%'){
-            return r2;
+            if(pila.top()== "+"||pila.top()== "-"||pila.top()== "*"||pila.top()== "/"){
+                return r1;
+            }else{
+                return r2;
+            }
         }
                  
 }
@@ -491,4 +500,88 @@ float eval::evaluarExpresion(std::vector<std::string> expresion){
     }
 
     return std::stof(resultado.top());
+}
+
+void eval::FuncionPrincipal(){
+    
+    int opcion=0;
+    std::string expre ="";
+    eval ev;
+    while(true){
+        ProgressBar *bar = new ProgressBar(10,"\033[1;32mGenerando resultados:\033[0m");
+        std::cout<<"\n";
+        std::cout<<"---------------------------------------------------"<<std::endl;
+        std::cout<<"Elija una opcion:\n";
+        std::cout<<"1.Evaluar una Expresion\n";
+        std::cout<<"2.Correr Tests predefinidos (TDD)\n";
+        std::cout<<"3.Evaluar Expresiones (TDD)\n";
+        std::cout<<"4.Salir\n";
+        std::cin>> opcion;
+        std::cout<<"\n";
+        std::vector<std::string>tok,pos;
+        switch(opcion){
+            case 1:
+                //char wait= 't';
+                std::cout<<"Ingrese un expresion matematica:\n";
+                std::cin >> expre;
+                std::cout<<"\n";
+                if(ev.evaluarExpresion(expre)){
+                    for(int i= 0; i <=10;++i){
+                        bar->Progressed(i);
+                        std::this_thread::sleep_for(std::chrono::milliseconds(200));
+                    }
+                    std::cout<<"\n";
+                    std::cout<<"\033[1;34mExpresion en postfijo:\033[0m ";
+                    tok = ev.Tokenizar(expre);
+                    pos = ev.passPosfix(tok);
+                    for(int a=0; a< pos.size();a++){
+                        std::cout<<pos[a]<<" ";
+                    }
+                    std::cout<<"\n";
+                    std::cout<<"\033[1;34mResultado de la expresion:\033[0m "<<ev.evaluarExpresion(pos);
+                    getwchar();
+                    std::cout<<"\n";
+                }
+                
+                //system("pause");
+                
+                break;
+            case 2:
+                system("./TestTDD");
+                std::cout<<"\n";
+                break;
+            case 3:
+                int a;
+                float b;
+                std::cout<<"Escriba la expresion a evaluar\n";
+                std::cin>>expre;
+                std::cout<<"\n";
+                if(ev.evaluarExpresion(expre)){
+                    tok = ev.Tokenizar(expre);
+                    pos = ev.passPosfix(tok);
+                    std::cout<<"Escriba el resultado esperado\n";
+                    std::cin>>a;
+                    b= ev.evaluarExpresion(pos);
+                    std::cout<<"\n";
+                    if(b==a){
+                        std::cout<<"\033[1;32mEl test paso\033[0m";
+                    }else{
+                        std::cout<<"\033[1;31mEl test no paso\033[0m\n\n";
+                        std::cout<<"Resultado esperado: "<<a<<"\n";
+                        std::cout<<"Resultado final: "<<b<<"\n";
+                    }
+                    std::cout<<"\n";
+                }
+
+                break;
+            case 4:
+                delete bar;
+                std::cout<<"Saliendo...\n";
+                return;
+            default:
+                std::cout<<"opcion invalida\n";
+                break;
+        }
+    }
+
 }

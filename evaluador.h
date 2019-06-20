@@ -8,6 +8,10 @@
 #include <algorithm>
 #include <math.h>
 #include <tuple>
+#include <thread>
+#include <thread>
+#include <chrono>
+#include "progress_bar.hpp"
 
 struct operador{
     int peso;
@@ -48,6 +52,7 @@ public:
     std::vector<operador> PesosOP();
     std::vector<std::string>passPosfix(std::vector<std::string>);
     float evaluarExpresion(std::vector<std::string>);
+    void FuncionPrincipal(void);
     //^ % mismo peso 
     //* / mismo peso
     // + - msimo peso
