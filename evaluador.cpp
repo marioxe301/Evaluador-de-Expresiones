@@ -264,6 +264,30 @@ bool eval::verificarPoCExtra(std::string expresion){
             verificacion = false;
         }
 
+        if(expresion[i]== ')' && isOther(expresion[i+1])){
+            verificacion = false;
+        }
+
+        if(expresion[i]== ']' && isOther(expresion[i+1])){
+            verificacion = false;
+        }
+
+         if(expresion[i]== ')' && isNumber(std::string(1,expresion[i+1]))){
+            verificacion = false;
+        }
+
+        if(expresion[i]== ']' && isNumber(std::string(1,expresion[i+1]))){
+            verificacion = false;
+        }
+
+         if(expresion[i]== ')' && isToken(expresion[i+1])){
+            verificacion = false;
+        }
+
+        if(expresion[i]== ']' && isToken(expresion[i+1])){
+            verificacion = false;
+        }
+
     }
     return verificacion;
 }

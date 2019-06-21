@@ -27,6 +27,15 @@ std::vector<std::string>test17 = ev.passPosfix(ev.Tokenizar("2^3"));
 std::vector<std::string>test18 = ev.passPosfix(ev.Tokenizar("(1*2)+(3^3)-(5%5)"));
 std::vector<std::string>test19 = ev.passPosfix(ev.Tokenizar("(1*2)+(3%3)-(5%5)+(3%2)+(3/2)+21"));
 
+//Test para evaluar errores
+bool a1 = ev.evaluarExpresion("10+1+2)*2");
+bool a2= ev.evaluarExpresion("1+1+1+1+1*(2*1)a4");
+bool a3= ev.evaluarExpresion("10+([1+2*3)");
+bool a4= ev.evaluarExpresion("()+(1*2)+(3/3)-(5%5)");
+bool a5= ev.evaluarExpresion("2^");
+bool a6= ev.evaluarExpresion("(1*2)+(3^3)-(5%5)");
+bool a7= ev.evaluarExpresion("(1*2)(3%3)(5%5)+(3%2)+(3/2)21");
+
 TEST_CASE("Test operaciones basicas"){
     CHECK(ev.evaluarExpresion(test1)== 13.0f);
     CHECK(ev.evaluarExpresion(test2)== -4.0f);
@@ -55,4 +64,14 @@ TEST_CASE("Test operaciones complejas"){
     CHECK(ev.evaluarExpresion(test17)== 8.0f);
     CHECK(ev.evaluarExpresion(test18)== 29.0f);
     CHECK(ev.evaluarExpresion(test19)== 23.5f);
+}
+
+TEST_CASE("Evalua las condiciones"){
+    CHECK(a1== false );
+    CHECK(a2== false );
+    CHECK(a3== false );
+    CHECK(a4== false );
+    CHECK(a5== false );
+    CHECK(a6== true );
+    CHECK(a7== false);
 }
