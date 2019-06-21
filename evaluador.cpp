@@ -551,7 +551,7 @@ void eval::FuncionPrincipal(){
                 std::cout<<"\n";
                 break;
             case 3:
-                int a;
+                float a;
                 float b;
                 std::cout<<"Escriba la expresion a evaluar\n";
                 std::cin>>expre;
